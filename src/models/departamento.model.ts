@@ -15,6 +15,10 @@ export class Departamento extends Entity {
   })
   nombre: string;
 
+  @property({
+    type: 'string',
+  })
+  empresaId?: string;
 
   constructor(data?: Partial<Departamento>) {
     super(data);

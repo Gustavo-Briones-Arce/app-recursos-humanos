@@ -1,4 +1,7 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
+import {CajaCompensacion} from './caja-compensacion.model';
+import {Mutual} from './mutual.model';
+import {Departamento} from './departamento.model';
 
 @model()
 export class Empresa extends Entity {
@@ -33,6 +36,14 @@ export class Empresa extends Entity {
   })
   rutRepreLegal: string;
 
+  @belongsTo(() => CajaCompensacion)
+  cajaCompensacionId: string;
+
+  @belongsTo(() => Mutual)
+  mutualId: string;
+
+  @hasMany(() => Departamento)
+  departamentos: Departamento[];
 
   constructor(data?: Partial<Empresa>) {
     super(data);
