@@ -4,27 +4,62 @@ import {
   Filter,
   FilterExcludingWhere,
   repository,
-  Where,
+  Where
 } from '@loopback/repository';
 import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
+  del, get,
+  getModelSchemaRef, HttpErrors, param,
+
+
+  patch, post,
+
+
+
+
   put,
-  del,
+
   requestBody,
-  response,
+  response
 } from '@loopback/rest';
+import {ServiceKeys as keys} from '../keys/service-keys';
 import {Usuario} from '../models';
 import {UsuarioRepository} from '../repositories';
+import {AutentificacionService} from '../services/autentificacion.service';
+import {EncrypDecrypService} from '../services/encryp-decryp.service';
+
+
+class Credenciales {
+  email: string;
+  contrasena: string;
+}
 
 export class UsuarioController {
   constructor(
     @repository(UsuarioRepository)
-    public usuarioRepository : UsuarioRepository,
-  ) {}
+    public usuarioRepository: UsuarioRepository,
+  ) { }
+
+  @post('/login', {
+    responses: {
+      '200': {
+        description: 'Login para Usuarios'
+      }
+    }
+  })
+  async login(
+    @requestBody() credenciales: Credenciales
+  ): Promise<object> {
+    let usuario = await new AutentificacionService(this.usuarioRepository).Identificar(credenciales.email, credenciales.contrasena);
+    if (usuario) {
+      let tk = await new AutentificacionService(this.usuarioRepository).GenerarToken(usuario);
+      return {
+        data: usuario,
+        token: tk
+      }
+    } else {
+      throw new HttpErrors[401]('Usuario o Contraseña invalido');
+    }
+  }
 
   @post('/usuarios')
   @response(200, {
@@ -44,6 +79,8 @@ export class UsuarioController {
     })
     usuario: Omit<Usuario, 'id'>,
   ): Promise<Usuario> {
+    let pass = usuario.contrasena;
+    usuario.contrasena = new EncrypDecrypService(keys.MD5).Encryp(pass);
     return this.usuarioRepository.create(usuario);
   }
 
