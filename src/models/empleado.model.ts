@@ -1,4 +1,13 @@
-import {Entity, model, property} from '@loopback/repository';
+import {belongsTo, Entity, hasMany, model, property} from '@loopback/repository';
+import {Afp} from './afp.model';
+import {Banco} from './banco.model';
+import {Carga} from './carga.model';
+import {Contrato} from './contrato.model';
+import {Departamento} from './departamento.model';
+import {Gratificacion} from './gratificacion.model';
+import {Isapre} from './isapre.model';
+import {Sindicato} from './sindicato.model';
+import {TipoCuenta} from './tipo-cuenta.model';
 
 @model()
 export class Empleado extends Entity {
@@ -58,6 +67,18 @@ export class Empleado extends Entity {
   jubilado?: boolean;
 
   @property({
+    type: 'boolean',
+    default: 1,
+  })
+  afc?: boolean;
+
+  @property({
+    type: 'boolean',
+    default: 1,
+  })
+  estado?: boolean;
+
+  @property({
     type: 'number',
   })
   planSalud?: number;
@@ -77,6 +98,32 @@ export class Empleado extends Entity {
   })
   tramoCargas?: number;
 
+  @belongsTo(() => Contrato)
+  contratoId: string;
+
+  @belongsTo(() => Gratificacion)
+  gratificacionId: string;
+
+  @belongsTo(() => Sindicato)
+  sindicatoId: string;
+
+  @belongsTo(() => Afp)
+  afpId: string;
+
+  @belongsTo(() => Isapre)
+  isapreId: string;
+
+  @belongsTo(() => Departamento)
+  departamentoId: string;
+
+  @belongsTo(() => Banco)
+  bancoId: string;
+
+  @belongsTo(() => TipoCuenta)
+  tipoCuentaId: string;
+
+  @hasMany(() => Carga)
+  cargas: Carga[];
 
   constructor(data?: Partial<Empleado>) {
     super(data);

@@ -16,3 +16,4 @@ export * from './parentesco.model';
 export * from './carga.model';
 export * from './movimiento-mensual.model';
 export * from './empleado.model';
+export * from './usuario.model';

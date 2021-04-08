@@ -16,3 +16,4 @@ export * from './region.repository';
 export * from './sindicato.repository';
 export * from './sucursal.repository';
 export * from './tipo-cuenta.repository';
+export * from './usuario.repository';
